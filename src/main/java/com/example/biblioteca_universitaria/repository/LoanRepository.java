@@ -9,12 +9,16 @@ import java.util.List;
 
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Long> {
-    // Lista todos os empréstimos de um usuário específico
-    List<Loan> findByBookId(Long bookId);
 
-    // Lista todos os empréstimos de um usuário específico
+    // Lista empréstimos de um determinado usuário
+    List<Loan> findByUsuarioId(Long userId);
+
+    // Lista empréstimos de um determinado livro
+    List<Loan> findByLivroId(Long bookId);
+
+    // Lista empréstimos filtrando por status (OPEN, RETURNED, LATE)
     List<Loan> findByStatus(LoanStatus status);
 
     // Verifica se o usuário já possui um empréstimo em aberto para o mesmo livro
-    boolean existsByUserIdAndBookIdAndStatus(Long userId, Long bookId, LoanStatus status);
+    boolean existsByUsuarioIdAndLivroIdAndStatus(Long userId, Long bookId, LoanStatus status);
 }
