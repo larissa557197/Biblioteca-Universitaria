@@ -57,6 +57,7 @@ public class LoanController {
 
         Book livro = bookRepository.findById(livroId)
                 .orElse(null);
+
         if (livro == null) {
             return ResponseEntity.badRequest().body("Livro não encontrado");
         }
