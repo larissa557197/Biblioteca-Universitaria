@@ -1,5 +1,7 @@
+// Define o pacote onde os controladores REST estão localizados
 package com.example.biblioteca_universitaria.controller;
 
+// Importação das entidades, repositórios e anotações do Spring
 import com.example.biblioteca_universitaria.domain.Book;
 import com.example.biblioteca_universitaria.repository.BookRepository;
 import org.springframework.http.ResponseEntity;
@@ -13,15 +15,18 @@ public class BookController {
 
     private final BookRepository bookRepository;
 
+    // Injeção de dependência via construtor do repositório de livros
     public BookController(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
+    // Retorna a lista completa de livros cadastrados no banco
     @GetMapping
     public List<Book> listar() {
         return bookRepository.findAll();
     }
 
+    // Busca um livro específico pelo ID e retorna HTTP 404 caso não seja encontrado
     @GetMapping("/{id}")
     public ResponseEntity<Book> buscarPorId(@PathVariable Long id) {
         return bookRepository.findById(id)
@@ -29,6 +34,7 @@ public class BookController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // Cadastra um novo livro, validando a duplicidade do ISBN e definindo o saldo inicial
     @PostMapping
     public ResponseEntity<?> criar(@RequestBody Book livro) {
         if (bookRepository.existsByIsbn(livro.getIsbn())) {
@@ -41,6 +47,7 @@ public class BookController {
         return ResponseEntity.ok(salvo);
     }
 
+    // Atualiza os dados de um livro existente pelo ID
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Book livro) {
         return bookRepository.findById(id)
@@ -56,6 +63,7 @@ public class BookController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // Remove um livro do acervo pelo ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         if (!bookRepository.existsById(id)) {
