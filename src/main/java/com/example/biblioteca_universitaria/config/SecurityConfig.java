@@ -6,6 +6,7 @@ import com.example.biblioteca_universitaria.security.JwtAuthenticationFilter;
 // Anotações do Spring para declarar métodos gerenciados (Beans) e classes de configuração
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 // Classes do Spring Security para gerenciamento e autenticação de usuários
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -51,6 +52,15 @@ public class SecurityConfig {
                                 "/swagger-ui/**", // Interface gráfica do Swagger
                                 "/swagger-ui.html" // Página principal de acesso ao Swagger UI
                         ).permitAll()
+
+                        // Permite leitura de livros para alunos e administradores
+                        .requestMatchers(HttpMethod.GET, "/api/livros/**").hasAnyRole("STUDENT", "ADMIN")
+
+                        // Restringe criação, edição e exclusão de livros exclusivamente para administradores
+                        .requestMatchers(HttpMethod.POST, "/api/livros/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/livros/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/livros/**").hasRole("ADMIN")
+
                         // Exige que qualquer outra requisição (anyRequest) esteja devidamente autenticada
                         .anyRequest().authenticated()
                 )
